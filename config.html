@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Mago - CyberNeumorfismo</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --surface: #161b22;
+            --text-main: #8b949e;
+            --text-heading: #c9d1d9;
+            --shadow-light: rgba(48, 54, 61, 0.6);
+            --shadow-dark: rgba(1, 4, 9, 0.9);
+            --neon: #00f2fe;
+            --neon-glow: rgba(0, 242, 254, 0.3);
+            --success: #3fb950;
+            --danger: #ff5555;
+            --border: #30363d;
+        }
+
+        body.light-mode {
+            --bg-color: #e2e8f0;
+            --surface: #edf2f7;
+            --text-main: #4a5568;
+            --text-heading: #1a202c;
+            --shadow-light: #ffffff;
+            --shadow-dark: #cbd5e1;
+            --neon: #0284c7;
+            --neon-glow: rgba(2, 132, 199, 0.25);
+            --success: #16a34a;
+            --danger: #dc2626;
+            --border: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 360px;
+            background: var(--surface);
+            padding: 30px 25px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            box-sizing: border-box;
+            transition: max-width 0.3s ease, padding 0.3s ease;
+        }
+
+        .container.expanded {
+            max-width: 600px;
+            padding: 25px;
+        }
+
+        .login-container { text-align: center; }
+
+        h1, h2 {
+            color: var(--text-heading);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        h1 { font-size: 20px; margin: 0 0 5px 0; text-shadow: 0 0 10px var(--neon-glow); }
+        h2 { font-size: 15px; margin-top: 22px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+        p { font-size: 13px; color: var(--text-main); margin: 0 0 18px 0; }
+        label { display: block; font-size: 12px; color: var(--text-heading); margin-bottom: 4px; font-weight: 500; }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 4px 0 14px 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            outline: none;
+            border-radius: 12px;
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            color: var(--text-heading);
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--neon);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light), 0 0 10px var(--neon-glow);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--neon);
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            transition: all 0.15s ease;
+        }
+
+        button:hover {
+            color: var(--text-heading);
+            text-shadow: 0 0 8px var(--neon);
+        }
+
+        button:active {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .icon-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            margin: 0;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon);
+            font-size: 15px;
+        }
+
+        .icon-btn:active { box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+
+        .url-box {
+            background: var(--surface);
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .url-box code {
+            color: var(--neon);
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            width: auto;
+            padding: 6px 12px;
+            margin: 0;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .live-monitor {
+            background: var(--surface);
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .live-word {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--neon);
+            text-shadow: 0 0 12px var(--neon-glow);
+            margin: 10px 0;
+            min-height: 32px;
+            letter-spacing: 1px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            background: rgba(63, 185, 80, 0.15);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .forgot-pass {
+            display: block;
+            margin-top: 14px;
+            font-size: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .forgot-pass:hover { color: var(--neon); text-decoration: underline; }
+
+        .canal-campos { display: none; }
+        #login-panel, #config-panel { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-wrapper">
+        <!-- LOGIN DEL MAGO -->
+        <div id="login-panel" class="login-container">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 5px;">
+                <button class="icon-btn" id="theme-toggle-login" title="Cambiar tema">⚡</button>
+            </div>
+            <h1>ACCESO MAGO</h1>
+            <p>Configura tu enlace y salida en vivo.</p>
+            <input type="email" id="mago-email" placeholder="Tu correo electrónico">
+            <input type="password" id="mago-password" placeholder="Tu contraseña">
+            <button id="btn-mago-login">INGRESAR</button>
+            <a class="forgot-pass" id="btn-mago-forgot">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <!-- PANEL DE CONFIGURACIÓN Y MONITOR EN VIVO -->
+        <div id="config-panel">
+            <div class="top-bar">
+                <h1 id="titulo-bienvenida">Mi Configuración</h1>
+                <div style="display: flex; gap: 10px;">
+                    <button class="icon-btn" id="theme-toggle-dash" title="Cambiar tema">⚡</button>
+                    <button class="icon-btn" id="btn-mago-logout" title="Cerrar Sesión">🚪</button>
+                </div>
+            </div>
+
+            <label>Tu enlace corto de presentación:</label>
+            <div class="url-box">
+                <code id="lbl-mi-url">Cargando...</code>
+                <button type="button" class="copy-btn" id="btn-copiar-url">Copiar</button>
+            </div>
+
+            <!-- MONITOR EN TIEMPO REAL -->
+            <div class="live-monitor">
+                <span class="status-badge">● ESCUCHANDO EN VIVO</span>
+                <div class="live-word" id="palabra-vivo">Esperando búsqueda...</div>
+                <button type="button" id="btn-activar-audio" style="font-size: 12px; padding: 8px;">🔊 Activar Audio / Probar Salida</button>
+            </div>
+
+            <h2>Canal de Salida</h2>
+            <form id="config-form">
+                <label>¿Cómo quieres recibir la palabra?</label>
+                <select id="tipo-destino">
+                    <option value="pantalla">Solo en este Monitor (En Vivo)</option>
+                    <option value="tts">Texto a Voz (Audífono Bluetooth)</option>
+                    <option value="whatsapp">WhatsApp (Abrir chat con el texto)</option>
+                    <option value="telegram">Telegram Bot (Envío silencioso directo)</option>
+                    <option value="pwa">Otra PWA (Redirección con parámetro)</option>
+                </select>
+
+                <!-- Campos dinámicos según canal -->
+                <div id="campos-whatsapp" class="canal-campos">
+                    <label>Tu número de WhatsApp (con código de país, ej: 573001234567):</label>
+                    <input type="tel" id="wa-numero" placeholder="573001234567">
+                </div>
+
+                <div id="campos-telegram" class="canal-campos">
+                    <label>Token del Bot de Telegram:</label>
+                    <input type="text" id="tg-token" placeholder="123456789:ABCdefGHIjklMNOpqrSTUvwxYZ">
+                    <label>Tu Chat ID de Telegram:</label>
+                    <input type="text" id="tg-chatid" placeholder="987654321">
+                </div>
+
+                <div id="campos-pwa" class="canal-campos">
+                    <label>URL de tu otra PWA (se añadirá ?palabra=TEXTO):</label>
+                    <input type="url" id="pwa-url" placeholder="https://mi-otra-app.web.app/">
+                </div>
+
+                <div id="campos-tts" class="canal-campos">
+                    <label>Velocidad de voz (0.5 lento - 1.5 rápido):</label>
+                    <input type="number" id="tts-rate" step="0.1" min="0.5" max="2" value="1.0">
+                </div>
+
+                <button type="submit">GUARDAR CONFIGURACIÓN</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <script>
+        const mainWrapper = document.getElementById('main-wrapper');
+        const loginPanel = document.getElementById('login-panel');
+        const configPanel = document.getElementById('config-panel');
+        const btnMagoLogin = document.getElementById('btn-mago-login');
+        const btnMagoLogout = document.getElementById('btn-mago-logout');
+        const btnMagoForgot = document.getElementById('btn-mago-forgot');
+        const configForm = document.getElementById('config-form');
+
+        const tituloBienvenida = document.getElementById('titulo-bienvenida');
+        const lblMiUrl = document.getElementById('lbl-mi-url');
+        const btnCopiarUrl = document.getElementById('btn-copiar-url');
+        const palabraVivo = document.getElementById('palabra-vivo');
+        const btnActivarAudio = document.getElementById('btn-activar-audio');
+
+        const tipoDestino = document.getElementById('tipo-destino');
+        const waNumero = document.getElementById('wa-numero');
+        const tgToken = document.getElementById('tg-token');
+        const tgChatId = document.getElementById('tg-chatid');
+        const pwaUrl = document.getElementById('pwa-url');
+        const ttsRate = document.getElementById('tts-rate');
+
+        let miIdMago = null;
+        let ultimoTimestampProcesado = Date.now();
+        let audioDesbloqueado = false;
+
+        // Tema Oscuro / Claro
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('mago_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+        if (localStorage.getItem('mago_theme') === 'light') document.body.classList.add('light-mode');
+        document.getElementById('theme-toggle-login').onclick = toggleTheme;
+        document.getElementById('theme-toggle-dash').onclick = toggleTheme;
+
+        // Mostrar campos según canal seleccionado
+        function actualizarCamposVisibles() {
+            document.querySelectorAll('.canal-campos').forEach(el => el.style.display = 'none');
+            const sel = tipoDestino.value;
+            if (sel === 'whatsapp') document.getElementById('campos-whatsapp').style.display = 'block';
+            if (sel === 'telegram') document.getElementById('campos-telegram').style.display = 'block';
+            if (sel === 'pwa') document.getElementById('campos-pwa').style.display = 'block';
+            if (sel === 'tts') document.getElementById('campos-tts').style.display = 'block';
+        }
+        tipoDestino.onchange = actualizarCamposVisibles;
+
+        // Control de Autenticación
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                mainWrapper.classList.add('expanded');
+                loginPanel.style.display = 'none';
+                configPanel.style.display = 'block';
+                inicializarMago(user.email);
+            } else {
+                mainWrapper.classList.remove('expanded');
+                loginPanel.style.display = 'block';
+                configPanel.style.display = 'none';
+            }
+        });
+
+        btnMagoLogin.onclick = () => {
+            const email = document.getElementById('mago-email').value;
+            const pass = document.getElementById('mago-password').value;
+            auth.signInWithEmailAndPassword(email, pass).catch(err => alert("Error: " + err.message));
+        };
+
+        btnMagoLogout.onclick = () => auth.signOut();
+
+        btnMagoForgot.onclick = () => {
+            const email = document.getElementById('mago-email').value.trim();
+            if (!email) return alert("Escribe tu correo primero.");
+            auth.sendPasswordResetEmail(email)
+                .then(() => alert("Correo de recuperación enviado."))
+                .catch(err => alert("Error: " + err.message));
+        };
+
+        // Buscar ID asignado al correo del mago
+        function inicializarMago(email) {
+            db.ref('configuracion_magos').once('value', snapshot => {
+                const magos = snapshot.val();
+                if (!magos) return;
+
+                Object.keys(magos).forEach(id => {
+                    if (magos[id].correo && magos[id].correo.toLowerCase() === email.toLowerCase()) {
+                        miIdMago = id;
+                        const data = magos[id];
+
+                        tituloBienvenida.innerText = `Hola, ${data.nombre || id}`;
+                        const urlCorta = `${window.location.origin}/#${id}`;
+                        lblMiUrl.innerText = urlCorta;
+
+                        if (data.tipoDestino) tipoDestino.value = data.tipoDestino;
+                        if (data.waNumero) waNumero.value = data.waNumero;
+                        if (data.tgToken) tgToken.value = data.tgToken;
+                        if (data.tgChatId) tgChatId.value = data.tgChatId;
+                        if (data.pwaUrl) pwaUrl.value = data.pwaUrl;
+                        if (data.ttsRate) ttsRate.value = data.ttsRate;
+
+                        actualizarCamposVisibles();
+                        escucharBusquedasEnVivo(id);
+                    }
+                });
+
+                if (!miIdMago) {
+                    alert("Tu correo no tiene un ID de mago asignado. Contacta al administrador.");
+                }
+            });
+        }
+
+        // Copiar enlace corto
+        btnCopiarUrl.onclick = () => {
+            navigator.clipboard.writeText(lblMiUrl.innerText);
+            btnCopiarUrl.innerText = "¡Copiado!";
+            setTimeout(() => btnCopiarUrl.innerText = "Copiar", 2000);
+        };
+
+        // Guardar configuración
+        configForm.onsubmit = (e) => {
+            e.preventDefault();
+            if (!miIdMago) return;
+
+            db.ref(`configuracion_magos/${miIdMago}`).update({
+                tipoDestino: tipoDestino.value,
+                waNumero: waNumero.value.trim(),
+                tgToken: tgToken.value.trim(),
+                tgChatId: tgChatId.value.trim(),
+                pwaUrl: pwaUrl.value.trim(),
+                ttsRate: parseFloat(ttsRate.value) || 1.0,
+                actualizado: Date.now()
+            }).then(() => alert("¡Configuración guardada!"));
+        };
+
+        // Desbloquear síntesis de voz en móviles
+        btnActivarAudio.onclick = () => {
+            audioDesbloqueado = true;
+            ejecutarSalida("Sistema listo");
+            btnActivarAudio.innerText = "🔊 Audio / Salida Activa";
+        };
+
+        // Escuchar Firebase en tiempo real
+        function escucharBusquedasEnVivo(id) {
+            db.ref(`usuarios/${id}/busquedaActual`).on('value', snapshot => {
+                const dato = snapshot.val();
+                if (!dato || !dato.palabra) return;
+
+                if (dato.palabra === "RESET") {
+                    palabraVivo.innerText = "Esperando búsqueda...";
+                    return;
+                }
+
+                palabraVivo.innerText = dato.palabra;
+
+                // Solo disparar acción si es una búsqueda nueva (posterior a abrir el panel)
+                if (dato.timestamp && dato.timestamp > ultimoTimestampProcesado) {
+                    ultimoTimestampProcesado = dato.timestamp;
+                    ejecutarSalida(dato.palabra);
+                }
+            });
+        }
+
+        // Ejecutar acción según el canal elegido
+        function ejecutarSalida(texto) {
+            const canal = tipoDestino.value;
+
+            if (canal === 'tts') {
+                window.speechSynthesis.cancel();
+                const voz = new SpeechSynthesisUtterance(texto);
+                voz.lang = 'es-ES';
+                voz.rate = parseFloat(ttsRate.value) || 1.0;
+                window.speechSynthesis.speak(voz);
+            } 
+            else if (canal === 'whatsapp' && waNumero.value) {
+                const url = `https://wa.me/${waNumero.value.replace(/\D/g, '')}?text=${encodeURIComponent(texto)}`;
+                window.open(url, '_blank');
+            } 
+            else if (canal === 'telegram' && tgToken.value && tgChatId.value) {
+                fetch(`https://api.telegram.org/bot${tgToken.value}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: tgChatId.value,
+                        text: `🔮 Palabra: ${texto}`
+                    })
+                }).catch(err => console.error("Error Telegram:", err));
+            } 
+            else if (canal === 'pwa' && pwaUrl.value) {
+                const separador = pwaUrl.value.includes('?') ? '&' : '?';
+                window.open(`${pwaUrl.value}${separador}palabra=${encodeURIComponent(texto)}`, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>
