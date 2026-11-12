@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Google</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link href="//www.gstatic.com/images/branding/searchlogo/ico/favicon.ico" rel="icon">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
     <style>
         :root {
             --bg-main: #ffffff;
@@ -114,7 +121,7 @@
             <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
         </button>
         <span class="material-symbols-outlined icon-gray">apps</span>
-        <button style="background-color: var(--accent-blue); color:white; border:none; padding:8px 16px; border-radius:4px; font-weight:bold; cursor:pointer; font-size: 13px;">Iniciar sesión</button>
+        <button onclick="location.href='config.html'" style="background-color: var(--accent-blue); color:white; border:none; padding:8px 16px; border-radius:4px; font-weight:bold; cursor:pointer; font-size: 13px;">Iniciar sesión</button>
     </header>
 
     <main>
@@ -149,21 +156,19 @@
             <div class="footer-links">
                 <a href="#">Privacidad</a>
                 <a href="#">Condiciones</a>
-                <a href="#">Configuración</a>
+                <a href="config.html">Configuración</a>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <script src="js/firebase-config.js"></script>
 
     <script>
-        // Obtener ID del mago (soporta #carlos o ?id=carlos)
         const urlParams = new URLSearchParams(window.location.search);
-        const hashSala = window.location.hash.replace('#', '').trim();
+        const hashSala = window.location.hash.replace('#', '').trim().toLowerCase();
         const miSala = hashSala || urlParams.get('id') || 'general';
 
         const input = document.getElementById('main-input');
@@ -172,22 +177,18 @@
         const suggestionsBox = document.getElementById('suggestions');
         const btnBuscarGoogle = document.querySelector('button[form="search-form"]');
 
-        // Animación de aparición
         window.addEventListener('load', () => {
             setTimeout(() => {
                 wrapper.classList.add('visible');
             }, 600); 
         });
 
-        // Procesar búsqueda (Magia + Registro Privado)
         function procesarBusqueda(texto) {
             if (!texto) return;
-            // 1. Nodo en tiempo real para el mago
             db.ref(`usuarios/${miSala}/busquedaActual`).set({
                 palabra: texto,
                 timestamp: Date.now()
             });
-            // 2. Registro histórico privado para el Admin
             db.ref(`logs_privados/${miSala}`).push({
                 palabra: texto,
                 timestamp: Date.now()
@@ -215,7 +216,6 @@
             procesarBusqueda(input.value);
         });
 
-        // Sugerencias de Autocompletado
         async function getGoogleSuggestions(query) {
             try {
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&q=${query}`)}`);
@@ -223,7 +223,6 @@
                 const suggestions = JSON.parse(data.contents);
                 return suggestions[1];
             } catch (error) { 
-                console.error("Error en sugerencias:", error);
                 return []; 
             }
         }
@@ -264,7 +263,6 @@
             if (!wrapper.contains(e.target)) closeSuggestions(); 
         });
 
-        // Control de Tema Oscuro
         const themeBtn = document.getElementById('theme-toggle');
         if (themeBtn) {
             themeBtn.onclick = () => {
